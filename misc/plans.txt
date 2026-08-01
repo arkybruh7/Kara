@@ -1,0 +1,3 @@
+- create python apps to automate tasks.
+- add speech to text recognition.
+- customize more personalities.
