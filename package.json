@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "main": "app.js",
-   "test": "exit 0"
+  "scripts": {
+    "start": "node index.js",
+    "test": "exit 0"
+  }
 }
