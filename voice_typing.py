@@ -13,8 +13,7 @@ def voice_typing():
     recognizer.non_speaking_duration = 0.5
 
     with sr.Microphone() as source:
-        print("=" * 50)
-        print("🎤 Kara Voice Typing")
+        print("=" * 50)    
         print("Click in the window where you want to type.")
         print("Speak naturally.")
         print("Say 'exit program' to quit.")
@@ -26,7 +25,7 @@ def voice_typing():
 
         while True:
             try:
-                print("🎙️ Listening...")
+                print("Listening...")
 
                 audio = recognizer.listen(
                     source,
@@ -64,7 +63,7 @@ def voice_typing():
                 continue
 
             except sr.UnknownValueError:
-                print("🤔 Didn't catch that.")
+                print("Didn't catch that.")
 
             except sr.RequestError as e:
                 print(f"Speech API Error: {e}")
