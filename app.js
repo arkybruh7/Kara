@@ -1,5 +1,6 @@
 import fs from "fs";
 import readline from "readline";
+import { toolDefinitions, executeTool } from "./apps/tools.js";
 
 // Load personality
 const personality = JSON.parse(
@@ -84,6 +85,10 @@ ${catchphrases}
 CORE RULES:
 ${rules}
 
+CAPABILITIES:
+- You can play Spotify playlists when the user asks. Use the play_spotify_playlist tool.
+- When the user asks to play music or a playlist, use the tool — don't just describe what you'd do.
+
 Stay in character at all times. Respond naturally according to these traits and guidelines.`;
 }
 
@@ -95,13 +100,78 @@ const messages = [
     }
 ];
 
-// Ask Qwen
+// Ask Qwen (with tool calling support)
 async function askKara(message) {
     messages.push({
         role: "user",
         content: message
     });
 
+    // Step 1: Non-streaming request to detect tool calls
+    const toolCheckResponse = await fetch("http://localhost:11434/api/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            model: "qwen3:8b",
+            messages: messages,
+            tools: toolDefinitions,
+            stream: false
+        })
+    });
+
+    if (!toolCheckResponse.ok) {
+        const errBody = await toolCheckResponse.text();
+        throw new Error(`Ollama API returned status ${toolCheckResponse.status}: ${errBody}`);
+    }
+
+    const toolCheckResult = await toolCheckResponse.json();
+    const assistantMessage = toolCheckResult.message;
+
+    // Step 2: Check if the model wants to call a tool
+    if (assistantMessage.tool_calls && assistantMessage.tool_calls.length > 0) {
+        // Add the assistant's tool call message to history
+        messages.push(assistantMessage);
+
+        // Execute each tool call
+        for (const toolCall of assistantMessage.tool_calls) {
+            const funcName = toolCall.function.name;
+            const funcArgs = toolCall.function.arguments;
+
+            console.log(`\n⚡ Running tool: ${funcName}(${JSON.stringify(funcArgs)})`);
+
+            const result = await executeTool(funcName, funcArgs);
+
+            console.log(`✅ Result: ${result}`);
+
+            // Add tool result to conversation history
+            messages.push({
+                role: "tool",
+                content: result
+            });
+        }
+
+        // Step 3: Get Kara's natural response after tool execution (streaming)
+        return await streamKaraResponse();
+    }
+
+    // No tool call — model gave a normal text response
+    // Add it to history and print it
+    const content = assistantMessage.content || "";
+    if (content) {
+        process.stdout.write("\nKara: " + content + "\n");
+        messages.push({
+            role: "assistant",
+            content: content
+        });
+    }
+
+    return content;
+}
+
+// Stream a response from Kara (used after tool execution or for normal replies)
+async function streamKaraResponse() {
     const response = await fetch("http://localhost:11434/api/chat", {
         method: "POST",
         headers: {
