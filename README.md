@@ -1,5 +1,7 @@
 # Installation
 
+### make sure to have 8gb+ RAM i saw some reel abt display going black when model runs on weak systems. other than that youre good to go
+
 Prerequisites: node, python, Ollama
 
 Youre gonna have to have Qwen installed locally in your device through Ollama
