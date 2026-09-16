@@ -32,7 +32,7 @@ also to play spotify it uses Open CV to recognize the playbutton so if youre ver
 - Clone the repo
 - install dependencies
   ~~~ bash
-  node install
+  npm install
   pip install -r requirement.txt
   ~~~
 - Clone the repo
