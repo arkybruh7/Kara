@@ -27,6 +27,7 @@ also to play spotify it uses Open CV to recognize the playbutton so if youre ver
 ### Guide
 
 - Install Ollama and Qwen 3:8B model
+- Clone the repo
 - install dependencies
   ~~~ bash
   node install
