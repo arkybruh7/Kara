@@ -24,3 +24,28 @@ this is because spotify no longer takes api request from free accounts,
 also to play spotify it uses Open CV to recognize the playbutton so if youre version is modded and doesnt look like default change the image at "apps/resources/play_button.png" with ss of similar size.
 
 
+### Guide
+
+- Install Ollama and Qwen 3:8B model
+- Clone the repo
+- run this in cmd
+
+ ~~~ bash
+ollama serve
+ ~~~
+it should be listening at a port in your local network
+
+- run 
+~~~ bash
+node app.js
+~~~
+
+and then itll run you can give prompts just ask play this (indie and sangeet playlist by default)  and let it run and trust the process it should open and play the playlist.
+
+
+if you didnt understand js paste this to chatgpt
+
+~~~ prompt
+i wanna install this project from github, that runs listens to locally ran qwen3:8b using node.js and uses python to run inbuilt skills typa shi.
+main running in app.js that lsitens to locally hosted model and uses python system cmd to open spotify and uses comp vision to click the play button in spotify, tell me how to install, this is the repo link "https://github.com/arkybruh7/Kara"
+~~~
